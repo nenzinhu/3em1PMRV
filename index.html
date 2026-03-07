@@ -246,7 +246,7 @@
       </div>
     </header>
 
-    <!-- HOME (ordem nova) -->
+    <!-- HOME -->
     <section id="screen-home" class="screen active" style="margin-top:12px;">
       <div class="card">
         <div class="sectionHeader">
@@ -276,7 +276,7 @@
       </div>
     </section>
 
-    <!-- ASSUNÇÃO (2ª tela no app, mas 1ª no menu) -->
+    <!-- ASSUNÇÃO -->
     <section id="screen-assumir" class="screen" style="margin-top:12px;">
       <div class="actions">
         <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
@@ -426,11 +426,12 @@
             if (horaAtual >= 5 && horaAtual < 12) saudacao = "☀️ Bom dia";
             else if (horaAtual >= 12 && horaAtual < 18) saudacao = "🌤️ Boa tarde";
 
-            const texto = `${saudacao}! Guarnição iniciando serviço\n\n` +
+            /* ✅ CORRIGIDO: SEM \n\n (somente \n) */
+            const texto = `${saudacao}! Guarnição iniciando serviço\n` +
                           `🔹 *Viatura:* PM-${numViatura}\n` +
                           `🔹 *Policiais:* ${guarnicao.join(" / ")}\n` +
                           `🔹 *Horário:* ${horario}\n` +
-                          `🔹 *Local:* ${local}\n\n` +
+                          `🔹 *Local:* ${local}\n` +
                           `Bom serviço a todos! 👮‍♂️🚓`;
 
             document.getElementById("ass_resultado").textContent = texto;
@@ -462,23 +463,22 @@
 
       <div class="card embed">
         <style>
-          .env :root { --primary:#25d366; --secondary:#3498db; --dark:#2c3e50; --bg:#f0f2f5; }
           .env{ font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color:#333; }
           .env .container { background:white; max-width:600px; margin:auto; padding:25px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
-          .env h2 { text-align:center; color:var(--dark); border-bottom:2px solid var(--primary); padding-bottom:10px; margin-bottom:25px; }
-          .env .envolvido-card { background:#fff; padding:20px; border-radius:12px; margin-bottom:25px; border:1px solid #ddd; border-left:8px solid var(--secondary); }
-          .env h3 { margin-top:0; color:var(--secondary); font-size:1.2em; }
+          .env h2 { text-align:center; color:#2c3e50; border-bottom:2px solid #25d366; padding-bottom:10px; margin-bottom:25px; }
+          .env .envolvido-card { background:#fff; padding:20px; border-radius:12px; margin-bottom:25px; border:1px solid #ddd; border-left:8px solid #3498db; }
+          .env h3 { margin-top:0; color:#3498db; font-size:1.2em; }
           .env label { display:block; margin-top:15px; font-size:0.75em; font-weight:bold; color:#7f8c8d; }
-          .env input, .env textarea { width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; font-size:16px; }
+          .env input, .env textarea, .env select { width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; font-size:16px; }
           .env input:not(.contato) { text-transform:uppercase; }
           .env .foto-preview-container { display:grid; grid-template-columns:repeat(auto-fill, minmax(80px,1fr)); gap:10px; margin-top:15px; padding:10px; background:#f9f9f9; border-radius:8px; min-height:50px; }
           .env .img-miniatura { width:100%; aspect-ratio:1/1; border-radius:6px; object-fit:cover; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
           .env .btn-foto { background:#e67e22; color:white; padding:14px; border-radius:8px; cursor:pointer; display:block; text-align:center; margin-top:10px; font-size:0.9em; font-weight:bold; }
           .env .menu-botoes { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:25px; }
           .env button { border:none; padding:18px; border-radius:10px; cursor:pointer; font-weight:bold; color:white; transition:0.3s; font-size:14px; }
-          .env .btn-add { background:var(--dark); grid-column:span 2; margin-bottom:10px; }
+          .env .btn-add { background:#2c3e50; grid-column:span 2; margin-bottom:10px; }
           .env .btn-copy { background:#7f8c8d; }
-          .env .btn-whats { background:var(--primary); }
+          .env .btn-whats { background:#25d366; }
           @media (max-width:480px){ .env .menu-botoes{ grid-template-columns:1fr; } .env .btn-add{ grid-column:span 1; } }
         </style>
 
@@ -488,16 +488,16 @@
 
             <div id="env_lista_envolvidos">
               <div class="envolvido-card">
-              <h3>Envolvido 1</h3>
+                <h3>Envolvido 1</h3>
 
-<label>TIPO:</label>
-<select class="tipo">
-  <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
-  <option value="TESTEMUNHA">TESTEMUNHA</option>
-</select>
+                <label>TIPO:</label>
+                <select class="tipo">
+                  <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+                  <option value="TESTEMUNHA">TESTEMUNHA</option>
+                </select>
 
-<label>NOME COMPLETO:</label>
-<input type="text" class="nome" placeholder="NOME DO MOTORISTA" spellcheck="true">
+                <label>NOME COMPLETO:</label>
+                <input type="text" class="nome" placeholder="NOME DO MOTORISTA" spellcheck="true">
 
                 <label>VEÍCULO:</label>
                 <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
@@ -531,9 +531,9 @@
 
         <script>
           function env_mascara(i){
-            let v = i.value.replace(/\\D/g,"");
-            if (v.length > 10) v = v.replace(/^(\\d{2})(\\d{5})(\\d{4})/, "($1) $2-$3");
-            else v = v.replace(/^(\\d{2})(\\d{4})(\\d{0,4})/, "($1) $2-$3");
+            let v = i.value.replace(/\D/g,"");
+            if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+            else v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
             i.value = v;
           }
 
@@ -554,57 +554,57 @@
             }
           }
 
-function env_adicionar(){
-  const lista = document.getElementById('env_lista_envolvidos');
+          function env_adicionar(){
+            const lista = document.getElementById('env_lista_envolvidos');
+            const n = lista.querySelectorAll('.envolvido-card').length + 1;
 
-  // Envolvido 1 já existe, então 1º clique vira 2, depois 3...
-  const n = lista.querySelectorAll('.envolvido-card').length + 1;
+            const div = document.createElement('div');
+            div.className = 'envolvido-card';
 
-  const div = document.createElement('div');
-  div.className = 'envolvido-card';
+            div.innerHTML = `
+              <h3>Envolvido ${n}</h3>
 
-  div.innerHTML = `
-    <h3>Envolvido ${n}</h3>
+              <label>TIPO:</label>
+              <select class="tipo">
+                <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+                <option value="TESTEMUNHA">TESTEMUNHA</option>
+              </select>
 
-    <label>TIPO:</label>
-    <select class="tipo">
-      <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
-      <option value="TESTEMUNHA">TESTEMUNHA</option>
-    </select>
+              <label>NOME COMPLETO:</label>
+              <input type="text" class="nome" spellcheck="true" placeholder="NOME COMPLETO">
 
-    <label>NOME COMPLETO:</label>
-    <input type="text" class="nome" spellcheck="true" placeholder="NOME COMPLETO">
+              <label>VEÍCULO:</label>
+              <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
 
-    <label>VEÍCULO:</label>
-    <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
+              <label>CONTATO:</label>
+              <input type="tel" class="contato" oninput="env_mascara(this)" maxlength="15" placeholder="(00) 00000-0000">
 
-    <label>CONTATO:</label>
-    <input type="tel" class="contato" oninput="env_mascara(this)" maxlength="15" placeholder="(00) 00000-0000">
+              <label>LOCAL:</label>
+              <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
 
-    <label>LOCAL:</label>
-    <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
+              <label>RELATO:</label>
+              <textarea class="relato" rows="3" spellcheck="true" placeholder="Descreva os fatos..."></textarea>
 
-    <label>RELATO:</label>
-    <textarea class="relato" rows="3" spellcheck="true" placeholder="Descreva os fatos..."></textarea>
+              <label class="btn-foto">
+                📸 TIRAR OU ANEXAR FOTOS
+                <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
+              </label>
 
-    <label class="btn-foto">
-      📸 TIRAR OU ANEXAR FOTOS
-      <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
-    </label>
+              <div class="foto-preview-container"></div>
+            `;
 
-    <div class="foto-preview-container"></div>
-  `;
+            lista.appendChild(div);
+            div.scrollIntoView({ behavior:'smooth' });
+          }
 
-  lista.appendChild(div);
-  div.scrollIntoView({ behavior:'smooth' });
-}
           function env_safeUpper(v){ return (v || "").toString().trim().toUpperCase(); }
 
           function env_montarTexto(){
             const cards = document.querySelectorAll('#env_lista_envolvidos .envolvido-card');
-            let txt = "*📋 RELATÓRIO DE SINISTRO*\\n";
-            txt += "🗓️ Data: " + new Date().toLocaleDateString('pt-BR') + "\\n";
-            txt += "--------------------------\\n\\n";
+            let txt = "*📋 RELATÓRIO DE SINISTRO*\n";
+            txt += "🗓️ Data: " + new Date().toLocaleDateString('pt-BR') + "\n";
+            /* ✅ CORRIGIDO: SEM \n\n (somente \n) */
+            txt += "--------------------------\n";
 
             cards.forEach((c, i) => {
               const nome = env_safeUpper(c.querySelector('.nome')?.value);
@@ -613,15 +613,16 @@ function env_adicionar(){
               const endereco = env_safeUpper(c.querySelector('.endereco')?.value);
               const relato = (c.querySelector('.relato')?.value || "").trim();
 
-            const tipo = (c.querySelector('.tipo')?.value || "ENVOLVIDO").toUpperCase();
-const rotulo = (tipo === "TESTEMUNHA") ? "🧑‍🦱 TESTEMUNHA" : "👤 ENVOLVIDO";
-txt += `*${rotulo} ${i+1}*\n`;
-              if (nome) txt += `• Nome: ${nome}\\n`;
-              if (marca) txt += `• Veículo: ${marca}\\n`;
-              if (contato) txt += `• Contato: ${contato}\\n`;
-              if (endereco) txt += `• Local: ${endereco}\\n`;
-              if (relato) txt += `• Relato: ${relato}\\n`;
-              txt += "\\n";
+              const tipo = (c.querySelector('.tipo')?.value || "ENVOLVIDO").toUpperCase();
+              const rotulo = (tipo === "TESTEMUNHA") ? "🧑‍🦱 TESTEMUNHA" : "👤 ENVOLVIDO";
+
+              txt += `*${rotulo} ${i+1}*\n`;
+              if (nome) txt += `• Nome: ${nome}\n`;
+              if (marca) txt += `• Veículo: ${marca}\n`;
+              if (contato) txt += `• Contato: ${contato}\n`;
+              if (endereco) txt += `• Local: ${endereco}\n`;
+              if (relato) txt += `• Relato: ${relato}\n`;
+              txt += "\n"; /* (uma quebra simples entre registros) */
             });
 
             return txt.trim();
@@ -652,14 +653,13 @@ txt += `*${rotulo} ${i+1}*\n`;
 
       <div class="card embed">
         <style>
-          .pmrv :root { --pm-green:#00A651; --pm-red:#ED1C24; --pm-dark:#1a472a; --wa-green:#25D366; }
           .pmrv{ font-family:'Segoe UI', Arial, sans-serif; color:#111; }
           .pmrv .container{
             background:white;width:100%;max-width:750px;padding:15px;border-radius:12px;
             box-shadow:0 10px 25px rgba(0,0,0,0.1); box-sizing:border-box; margin:0 auto;
           }
-          .pmrv header{ text-align:center; margin-bottom:15px; border-bottom:3px solid var(--pm-green); padding-bottom:8px; }
-          .pmrv h1{ color:var(--pm-dark); font-size:17px; margin:0; text-transform:uppercase; }
+          .pmrv header{ text-align:center; margin-bottom:15px; border-bottom:3px solid #00A651; padding-bottom:8px; }
+          .pmrv h1{ color:#1a472a; font-size:17px; margin:0; text-transform:uppercase; }
           .pmrv small{ font-size:11px; color:#666; font-weight:bold; }
           .pmrv .form-section{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:15px; }
           .pmrv .row-flex{ display:flex; gap:8px; grid-column:span 3; }
@@ -678,15 +678,15 @@ txt += `*${rotulo} ${i+1}*\n`;
           .pmrv #pmrv_relatorio{
             background:#f9f9f9; border:1px solid #ddd; padding:15px; border-radius:8px;
             white-space:pre-wrap; word-wrap:break-word; font-family:var(--mono);
-            font-size:13px; line-height:1.4; color:#222; margin-top:10px; border-left:5px solid var(--pm-green);
+            font-size:13px; line-height:1.4; color:#222; margin-top:10px; border-left:5px solid #00A651;
           }
           .pmrv .btn-group{ display:flex; gap:8px; margin-top:15px; flex-wrap:wrap; }
           .pmrv button{
             flex:1; padding:14px; border:none; border-radius:6px; cursor:pointer;
             font-weight:bold; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px;
           }
-          .pmrv .btn-copy{ background-color:var(--pm-dark); color:white; }
-          .pmrv .btn-whatsapp{ background-color:var(--wa-green); color:white; }
+          .pmrv .btn-copy{ background-color:#1a472a; color:white; }
+          .pmrv .btn-whatsapp{ background-color:#25D366; color:white; }
           .pmrv .btn-clear{ background-color:#e0e0e0; color:#333; }
           .pmrv .hidden{ display:none !important; }
           .pmrv .manual-box{ background:#f0f4f1; padding:10px; border-radius:6px; border:1px solid #d1d8d4; margin-top:5px; }
@@ -869,7 +869,7 @@ txt += `*${rotulo} ${i+1}*\n`;
           };
 
           function pmrv_validarVtr(input){
-            input.value = input.value.replace(/\\D/g,'').substring(0,4);
+            input.value = input.value.replace(/\D/g,'').substring(0,4);
             pmrv_atualizar();
           }
 
@@ -895,7 +895,7 @@ txt += `*${rotulo} ${i+1}*\n`;
 
           function pmrv_formatarKM(val){
             if (!val) return "---";
-            let clean = val.replace(/[^\\d.,]/g,'').replace(',', '.');
+            let clean = val.replace(/[^\d.,]/g,'').replace(',', '.');
             let num = parseFloat(clean);
             return isNaN(num) ? "---" : num.toLocaleString('pt-BR', { minimumFractionDigits: 3 });
           }
@@ -932,6 +932,7 @@ txt += `*${rotulo} ${i+1}*\n`;
             const rodovia = document.getElementById('pmrv_rodovia').value;
             const km = pmrv_formatarKM(document.getElementById('pmrv_km').value);
             const dinamica = document.getElementById('pmrv_dinamica_texto').value;
+
             const sentido = document.getElementById('pmrv_sentido').value === "MANUAL"
               ? document.getElementById('pmrv_sentido_manual').value
               : document.getElementById('pmrv_sentido').value;
@@ -944,38 +945,36 @@ txt += `*${rotulo} ${i+1}*\n`;
 
             let infoV = "";
             if (ocorrencia === "Sinistro de trânsito com vítima(s)"){
-              const l = document.getElementById('pmrv_qtd_leve').value;
-              const g = document.getElementById('pmrv_qtd_grave').value;
-              const gs = document.getElementById('pmrv_qtd_gravissima').value;
+              const l = Number(document.getElementById('pmrv_qtd_leve').value || 0);
+              const g = Number(document.getElementById('pmrv_qtd_grave').value || 0);
+              const gs = Number(document.getElementById('pmrv_qtd_gravissima').value || 0);
               let p = [];
               if (l > 0) p.push(`${l.toString().padStart(2,'0')} leve(s)`);
               if (g > 0) p.push(`${g.toString().padStart(2,'0')} grave(s)`);
               if (gs > 0) p.push(`${gs.toString().padStart(2,'0')} gravíssima(s)`);
-              infoV = p.length > 0 ? `\\n${b}Vítimas:${b} ${p.join(', ')}` : `\\n${b}Vítimas:${b} Qtd não informada`;
+              infoV = p.length > 0 ? `\n${b}Vítimas:${b} ${p.join(', ')}` : `\n${b}Vítimas:${b} Qtd não informada`;
             }
 
             const hora = document.getElementById('pmrv_hora_manual').checked
-              ? document.getElementById('pmrv_input_hora').value
+              ? (document.getElementById('pmrv_input_hora').value || "---")
               : new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
             const data = new Date().toLocaleDateString('pt-BR');
 
-            return `${b}COMANDO DE POLÍCIA MILITAR RODOVIÁRIA${b}
-${b}1º BPMRv / 1ª CIA / Posto 19${b}
-
-${b}Protocolo SADE:${b} ${sade}
-${b}Data:${b} ${data}
-${b}Hora:${b} ${hora}
-${b}Rodovia:${b} ${rodovia} / ${b}KM:${b} ${km}
-${b}Cidade:${b} ${cidade}
-
-${b}Tipo de ocorrência:${b} ${ocorrencia}
-${b}Tipo de sinistro:${b} ${tipoLabel}${infoV}
-
-A guarnição foi acionada ${conhecimento} para atendimento de sinistro na rodovia ${rodovia}, km ${km}, sentido ${sentido || '---'}, sendo empenhada a Viatura PM-${vtr}.
-
-${dinamica}
-
-Foram adotadas as providências administrativas cabíveis.`;
+            /* ✅ CORRIGIDO: texto SEM linhas vazias (sem pulo duplo) */
+            return (
+              `${b}COMANDO DE POLÍCIA MILITAR RODOVIÁRIA${b}\n` +
+              `${b}1º BPMRv / 1ª CIA / Posto 19${b}\n` +
+              `${b}Protocolo SADE:${b} ${sade}\n` +
+              `${b}Data:${b} ${data}\n` +
+              `${b}Hora:${b} ${hora}\n` +
+              `${b}Rodovia:${b} ${rodovia} / ${b}KM:${b} ${km}\n` +
+              `${b}Cidade:${b} ${cidade}\n` +
+              `${b}Tipo de ocorrência:${b} ${ocorrencia}\n` +
+              `${b}Tipo de sinistro:${b} ${tipoLabel}${infoV}\n` +
+              `A guarnição foi acionada ${conhecimento} para atendimento de sinistro na rodovia ${rodovia}, km ${km}, sentido ${sentido || '---'}, sendo empenhada a Viatura PM-${vtr}.\n` +
+              `${dinamica}\n` +
+              `Foram adotadas as providências administrativas cabíveis.`
+            );
           }
 
           function pmrv_atualizar(){
@@ -1046,11 +1045,4 @@ Foram adotadas as providências administrativas cabíveis.`;
     }
   </script>
 </body>
-
 </html>
-
-
-
-
-
-
