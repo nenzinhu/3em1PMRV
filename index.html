@@ -554,10 +554,10 @@
             }
           }
 
-       function env_adicionar(){
+function env_adicionar(){
   const lista = document.getElementById('env_lista_envolvidos');
 
-  // 1º clique => Envolvido 2 (porque o 1 já existe)
+  // Envolvido 1 já existe, então 1º clique vira 2, depois 3...
   const n = lista.querySelectorAll('.envolvido-card').length + 1;
 
   const div = document.createElement('div');
@@ -1048,6 +1048,7 @@ Foram adotadas as providências administrativas cabíveis.`;
 </body>
 
 </html>
+
 
 
 
