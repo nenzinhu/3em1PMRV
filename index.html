@@ -556,7 +556,7 @@
 
           function env_adicionar(){
             const lista = document.getElementById('env_lista_envolvidos');
-            const n = lista.children.length + 1;
+const n = lista.querySelectorAll('.envolvido-card').length + 1;
             const div = document.createElement('div');
             div.className = 'envolvido-card';
           div.innerHTML = `
@@ -1035,5 +1035,6 @@ Foram adotadas as providências administrativas cabíveis.`;
 </body>
 
 </html>
+
 
 
