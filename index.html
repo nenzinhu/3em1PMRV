@@ -488,10 +488,16 @@
 
             <div id="env_lista_envolvidos">
               <div class="envolvido-card">
-                <h3>Envolvido 1</h3>
+              <h3>Envolvido 1</h3>
 
-                <label>NOME COMPLETO:</label>
-                <input type="text" class="nome" placeholder="NOME DO MOTORISTA" spellcheck="true">
+<label>TIPO:</label>
+<select class="tipo">
+  <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+  <option value="TESTEMUNHA">TESTEMUNHA</option>
+</select>
+
+<label>NOME COMPLETO:</label>
+<input type="text" class="nome" placeholder="NOME DO MOTORISTA" spellcheck="true">
 
                 <label>VEÍCULO:</label>
                 <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
@@ -1021,4 +1027,5 @@ Foram adotadas as providências administrativas cabíveis.`;
     }
   </script>
 </body>
+
 </html>
