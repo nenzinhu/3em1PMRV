@@ -554,11 +554,11 @@
             }
           }
 
-          function env_adicionar(){
+       function env_adicionar(){
   const lista = document.getElementById('env_lista_envolvidos');
 
-  // (mantém a lógica de: 1º clique cria 2, depois 3, 4...)
-  const n = lista.children.length + 1;
+  // 1º clique => Envolvido 2 (porque o 1 já existe)
+  const n = lista.querySelectorAll('.envolvido-card').length + 1;
 
   const div = document.createElement('div');
   div.className = 'envolvido-card';
@@ -597,8 +597,7 @@
 
   lista.appendChild(div);
   div.scrollIntoView({ behavior:'smooth' });
-};
-
+}
           function env_safeUpper(v){ return (v || "").toString().trim().toUpperCase(); }
 
           function env_montarTexto(){
@@ -1049,6 +1048,7 @@ Foram adotadas as providências administrativas cabíveis.`;
 </body>
 
 </html>
+
 
 
 
