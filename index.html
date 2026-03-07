@@ -600,7 +600,9 @@
               const endereco = env_safeUpper(c.querySelector('.endereco')?.value);
               const relato = (c.querySelector('.relato')?.value || "").trim();
 
-              txt += `*👤 ENVOLVIDO ${i+1}*\\n`;
+            const tipo = (c.querySelector('.tipo')?.value || "ENVOLVIDO").toUpperCase();
+const rotulo = (tipo === "TESTEMUNHA") ? "🧑‍🦱 TESTEMUNHA" : "👤 ENVOLVIDO";
+txt += `*${rotulo} ${i+1}*\n`;
               if (nome) txt += `• Nome: ${nome}\\n`;
               if (marca) txt += `• Veículo: ${marca}\\n`;
               if (contato) txt += `• Contato: ${contato}\\n`;
@@ -1033,4 +1035,5 @@ Foram adotadas as providências administrativas cabíveis.`;
 </body>
 
 </html>
+
 
