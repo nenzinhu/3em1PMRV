@@ -559,27 +559,31 @@
             const n = lista.children.length + 1;
             const div = document.createElement('div');
             div.className = 'envolvido-card';
-            div.innerHTML = `
-              <h3>Envolvido ${n}</h3>
-              <label>NOME COMPLETO:</label>
-              <input type="text" class="nome" spellcheck="true" placeholder="NOME COMPLETO">
-              <label>VEÍCULO:</label>
-              <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
-              <label>CONTATO:</label>
-              <input type="tel" class="contato" oninput="env_mascara(this)" maxlength="15" placeholder="(00) 00000-0000">
-              <label>LOCAL:</label>
-              <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
-              <label>RELATO:</label>
-              <textarea class="relato" rows="3" spellcheck="true" placeholder="Descreva os fatos..."></textarea>
-              <label class="btn-foto">
-                📸 TIRAR OU ANEXAR FOTOS
-                <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
-              </label>
-              <div class="foto-preview-container"></div>
-            `;
-            lista.appendChild(div);
-            div.scrollIntoView({ behavior:'smooth' });
-          }
+          div.innerHTML = `
+  <h3>Envolvido ${n}</h3>
+
+  <label>TIPO:</label>
+  <select class="tipo">
+    <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+    <option value="TESTEMUNHA">TESTEMUNHA</option>
+  </select>
+
+  <label>NOME COMPLETO:</label>
+  <input type="text" class="nome" spellcheck="true" placeholder="NOME COMPLETO">
+  <label>VEÍCULO:</label>
+  <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
+  <label>CONTATO:</label>
+  <input type="tel" class="contato" oninput="env_mascara(this)" maxlength="15" placeholder="(00) 00000-0000">
+  <label>LOCAL:</label>
+  <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
+  <label>RELATO:</label>
+  <textarea class="relato" rows="3" spellcheck="true" placeholder="Descreva os fatos..."></textarea>
+  <label class="btn-foto">
+    📸 TIRAR OU ANEXAR FOTOS
+    <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
+  </label>
+  <div class="foto-preview-container"></div>
+`;
 
           function env_safeUpper(v){ return (v || "").toString().trim().toUpperCase(); }
 
@@ -1029,3 +1033,4 @@ Foram adotadas as providências administrativas cabíveis.`;
 </body>
 
 </html>
+
