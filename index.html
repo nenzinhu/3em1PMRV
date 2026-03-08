@@ -699,7 +699,7 @@
           <div class="container">
             <header>
               <h1>COMANDO DE POLÍCIA MILITAR RODOVIÁRIA</h1>
-              <small>1º BPMRv / 1ª CIA / Posto 19</small>
+              <small>1º BPMRv – 1ª Companhia – Posto 19</small>
             </header>
 
             <div class="form-section">
@@ -726,7 +726,7 @@
 
               <div class="row-flex">
                 <div style="flex-grow:1;">
-                  <label>Cidade</label>
+                  <label>Município</label>
                   <input type="text" id="pmrv_cidade" value="Florianópolis" oninput="pmrv_atualizar()">
                 </div>
                 <div style="width:100px;">
@@ -762,7 +762,7 @@
               <div class="span-3">
                 <label>Acionamento</label>
                 <select id="pmrv_conhecimento" onchange="pmrv_atualizar()">
-                  <option value="pela Central">Pela Central</option>
+                  <option value="pela Central de Emergência 198">Pela Central 198</option>
                   <option value="após deparar-se">Deparou-se</option>
                   <option value="por usuário da via">Usuário da via</option>
                 </select>
@@ -960,18 +960,26 @@
               : new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
             const data = new Date().toLocaleDateString('pt-BR');
 
+            const horaFormatada = hora === "---" ? "---" : hora.replace(/^(\d{2}):(\d{2})$/, '$1h$2min');
+
             /* ✅ CORRIGIDO: texto SEM linhas vazias (sem pulo duplo) */
             return (
               `${b}COMANDO DE POLÍCIA MILITAR RODOVIÁRIA${b}\n` +
-              `${b}1º BPMRv / 1ª CIA / Posto 19${b}\n` +
+              `${b}1º BPMRv – 1ª Companhia – Posto 19${b}\n` +
+              `\n` +
               `${b}Protocolo SADE:${b} ${sade}\n` +
+              `\n` +
               `${b}Data:${b} ${data}\n` +
-              `${b}Hora:${b} ${hora}\n` +
-              `${b}Rodovia:${b} ${rodovia} / ${b}KM:${b} ${km}\n` +
-              `${b}Cidade:${b} ${cidade}\n` +
+              `${b}Hora:${b} ${horaFormatada}\n` +
+              `\n` +
+              `${b}Rodovia:${b} ${rodovia}\n` +
+              `${b}Quilômetro:${b} ${km}\n` +
+              `${b}Município:${b} ${cidade}\n` +
+              `\n` +
               `${b}Tipo de ocorrência:${b} ${ocorrencia}\n` +
               `${b}Tipo de sinistro:${b} ${tipoLabel}${infoV}\n` +
-              `A guarnição foi acionada ${conhecimento} para atendimento de sinistro na rodovia ${rodovia}, km ${km}, sentido ${sentido || '---'}, sendo empenhada a Viatura PM-${vtr}.\n` +
+              `\n` +
+              `A guarnição da Polícia Militar Rodoviária foi acionada ${conhecimento} para atendimento de sinistro de trânsito, sendo empenhada a viatura PM-${vtr}.\n` +
               `${dinamica}\n` +
               `Foram adotadas as providências administrativas cabíveis.`
             );
@@ -998,7 +1006,7 @@
             ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
 
             document.getElementById("pmrv_ocorrencia").value = "Sinistro de trânsito com danos materiais";
-            document.getElementById("pmrv_conhecimento").value = "pela Central";
+            document.getElementById("pmrv_conhecimento").value = "pela Central de Emergência 198";
             document.getElementById("pmrv_sentido").value = "Centro–Bairro";
             document.getElementById("pmrv_subtipo").value = "1.1";
             document.getElementById("pmrv_hora_auto").checked = true;
