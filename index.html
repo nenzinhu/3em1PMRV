@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="description" content="4 em 1 PMRv — App para policiais rodoviários: Assunção de Serviço, Relato de Envolvidos, Relatório PMRv e Danos Aparentes."/>
   <title>4 em 1 PMRv</title>
 
   <style>
@@ -180,7 +181,7 @@
       gap: 12px;
       margin-top: 12px;
     }
-    @media (min-width: 860px){ .menuGrid{ grid-template-columns: 1fr 1fr 1fr; } }
+    @media (min-width: 860px){ .menuGrid{ grid-template-columns: 1fr 1fr; } }
 
     .menuBtn{
       border: 1px solid var(--border);
@@ -241,39 +242,39 @@
       </div>
 
       <div class="topActions">
-        <button class="btn btnGhost" onclick="go('home')">Menu</button>
-        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+        <button type="button" class="btn btnGhost" onclick="go('home')">Menu</button>
+        <button type="button" class="btn btnDanger" onclick="go('ended')">Sair</button>
       </div>
     </header>
 
     <!-- HOME -->
-    <section id="screen-home" class="screen active" style="margin-top:12px;">
+    <section id="screen-home" class="screen active" aria-label="Menu principal" style="margin-top:12px;">
       <div class="card">
         <div class="sectionHeader">
           <div>
             <h2 class="title">Escolha o que fazer</h2>
-            <p class="subtitle">Interface nova, mas os formulários continuam com a mesma lógica.</p>
+            <p class="subtitle">Selecione um módulo para começar.</p>
           </div>
-          <button class="btn btnPrimary" onclick="go('assumir')">Abrir Assunção</button>
+          <button type="button" class="btn btnPrimary" onclick="go('assumir')">Abrir Assunção</button>
         </div>
 
         <div class="menuGrid">
-          <button class="menuBtn" onclick="go('assumir')">
+          <button type="button" class="menuBtn" onclick="go('assumir')">
             <h2>Assunção de Serviço</h2>
             <p>Gerar texto de início de serviço</p>
           </button>
 
-          <button class="menuBtn" onclick="go('envolvidos')">
+          <button type="button" class="menuBtn" onclick="go('envolvidos')">
             <h2>Relato de Envolvidos</h2>
             <p>Registro de sinistro + fotos + texto formatado</p>
           </button>
 
-          <button class="menuBtn" onclick="go('pmrv')">
+          <button type="button" class="menuBtn" onclick="go('pmrv')">
             <h2>Relatório PMRv</h2>
             <p>Gerador Posto 19 - PMRv (copiar/WhatsApp)</p>
           </button>
 
-          <button class="menuBtn" onclick="window.open('danos/index.html', '_blank')">
+          <button type="button" class="menuBtn" onclick="window.open('danos/index.html', '_blank')">
             <h2>Danos por Tipo</h2>
             <p>Abre em nova aba para escolher Carro ou Motocicleta</p>
           </button>
@@ -282,10 +283,10 @@
     </section>
 
     <!-- ASSUNÇÃO -->
-    <section id="screen-assumir" class="screen" style="margin-top:12px;">
+    <section id="screen-assumir" class="screen" aria-label="Assunção de Serviço" style="margin-top:12px;">
       <div class="actions">
-        <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
-        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+        <button type="button" class="btn btnGhost" onclick="go('home')">← Voltar</button>
+        <button type="button" class="btn btnDanger" onclick="go('ended')">Sair</button>
       </div>
 
       <div class="card embed">
@@ -385,12 +386,12 @@
               </div>
             </div>
 
-            <button class="gen" onclick="ass_gerar()">⚡ GERAR TEXTO</button>
+            <button type="button" class="gen" onclick="ass_gerar()">⚡ GERAR TEXTO</button>
 
             <div id="ass_resultado_container">
               <div id="ass_resultado"></div>
-              <button class="btn-copy" onclick="ass_copiar()">📋 COPIAR TEXTO</button>
-              <button class="btn-whats" onclick="ass_whatsapp()">📲 ENVIAR PELO WHATSAPP</button>
+              <button type="button" class="btn-copy" onclick="ass_copiar()">📋 COPIAR TEXTO</button>
+              <button type="button" class="btn-whats" onclick="ass_whatsapp()">📲 ENVIAR PELO WHATSAPP</button>
             </div>
           </div>
         </div>
@@ -398,7 +399,7 @@
         <script>
           function ass_formatarNome(input){
             let valor = input.value;
-            if (valor.length > 0) input.value = valor.charAt(0).toUpperCase() + valor.slice(1).toLowerCase();
+            if (valor.length > 0) input.value = valor.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
           }
           function ass_toggleManualTime(){
             const select = document.getElementById("ass_horario");
@@ -460,10 +461,10 @@
     </section>
 
     <!-- ENVOLVIDOS -->
-    <section id="screen-envolvidos" class="screen" style="margin-top:12px;">
+    <section id="screen-envolvidos" class="screen" aria-label="Relato de Envolvidos" style="margin-top:12px;">
       <div class="actions">
-        <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
-        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+        <button type="button" class="btn btnGhost" onclick="go('home')">← Voltar</button>
+        <button type="button" class="btn btnDanger" onclick="go('ended')">Sair</button>
       </div>
 
       <div class="card embed">
@@ -525,11 +526,11 @@
               </div>
             </div>
 
-            <button class="btn-add" onclick="env_adicionar()">+ ADICIONAR NOVO ENVOLVIDO</button>
+            <button type="button" class="btn-add" onclick="env_adicionar()">+ ADICIONAR NOVO ENVOLVIDO</button>
 
             <div class="menu-botoes">
-              <button class="btn-copy" onclick="env_copiar()">📄 COPIAR PARA TELEGRAM/ZAP</button>
-              <button class="btn-whats" onclick="env_enviarWhats()">🟢 ENVIAR WHATSAPP</button>
+              <button type="button" class="btn-copy" onclick="env_copiar()">📄 COPIAR PARA TELEGRAM/ZAP</button>
+              <button type="button" class="btn-whats" onclick="env_enviarWhats()">🟢 ENVIAR WHATSAPP</button>
             </div>
           </div>
         </div>
@@ -537,8 +538,11 @@
         <script>
           function env_mascara(i){
             let v = i.value.replace(/\D/g,"");
-            if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-            else v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 10)     v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+            else if (v.length > 6) v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+            else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,4})/, "($1) $2");
+            else                   v = v.replace(/^(\d{0,2})/, "($1");
             i.value = v;
           }
 
@@ -650,10 +654,10 @@
     </section>
 
     <!-- PMRv -->
-    <section id="screen-pmrv" class="screen" style="margin-top:12px;">
+    <section id="screen-pmrv" class="screen" aria-label="Relatório PMRv" style="margin-top:12px;">
       <div class="actions">
-        <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
-        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+        <button type="button" class="btn btnGhost" onclick="go('home')">← Voltar</button>
+        <button type="button" class="btn btnDanger" onclick="go('ended')">Sair</button>
       </div>
 
       <div class="card embed">
@@ -843,9 +847,9 @@
             <div id="pmrv_relatorio"></div>
 
             <div class="btn-group">
-              <button class="btn-clear" onclick="pmrv_limpar()">Limpar</button>
-              <button class="btn-copy" onclick="pmrv_copiar()">📋 Copiar</button>
-              <button class="btn-whatsapp" onclick="pmrv_enviarWhatsApp()">📱 WhatsApp</button>
+              <button type="button" class="btn-clear" onclick="pmrv_limpar()">Limpar</button>
+              <button type="button" class="btn-copy" onclick="pmrv_copiar()">📋 Copiar</button>
+              <button type="button" class="btn-whatsapp" onclick="pmrv_enviarWhatsApp()">📱 WhatsApp</button>
             </div>
           </div>
         </div>
@@ -1026,10 +1030,10 @@
     </section>
 
     <!-- DANOS APARENTES -->
-    <section id="screen-danos" class="screen" style="margin-top:12px;">
+    <section id="screen-danos" class="screen" aria-label="Danos Aparentes" style="margin-top:12px;">
       <div class="actions">
-        <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
-        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+        <button type="button" class="btn btnGhost" onclick="go('home')">← Voltar</button>
+        <button type="button" class="btn btnDanger" onclick="go('ended')">Sair</button>
       </div>
 
       <div class="card embed">
@@ -1067,14 +1071,14 @@
               </div>
             </div>
 
-            <button class="btn-add" onclick="dan_adicionarVeiculo()">+ Adicionar veículo (até 4)</button>
-            <button class="btn-gen" onclick="dan_gerar()">Gerar texto</button>
+            <button type="button" class="btn-add" onclick="dan_adicionarVeiculo()">+ Adicionar veículo (até 4)</button>
+            <button type="button" class="btn-gen" onclick="dan_gerar()">Gerar texto</button>
 
             <div id="dan_resultado_container">
               <div id="dan_resultado"></div>
               <div class="btn-row">
-                <button class="btn-copy" onclick="dan_copiar()">Copiar</button>
-                <button class="btn-whats" onclick="dan_whatsapp()">WhatsApp</button>
+                <button type="button" class="btn-copy" onclick="dan_copiar()">Copiar</button>
+                <button type="button" class="btn-whats" onclick="dan_whatsapp()">WhatsApp</button>
               </div>
             </div>
           </div>
@@ -1151,12 +1155,12 @@
     </section>
 
     <!-- ENCERRADO -->
-    <section id="screen-ended" class="screen" style="margin-top:12px;">
+    <section id="screen-ended" class="screen" aria-label="Encerrado" style="margin-top:12px;">
       <div class="card endedBox">
         <h2>Aplicativo encerrado</h2>
         <p>Você pode fechar esta aba ou voltar ao menu.</p>
         <div class="actions" style="justify-content:center; margin-top:14px;">
-          <button class="btn btnPrimary" onclick="go('home')">Voltar ao menu</button>
+          <button type="button" class="btn btnPrimary" onclick="go('home')">Voltar ao menu</button>
         </div>
       </div>
     </section>
@@ -1169,7 +1173,9 @@
       ids.forEach(id => {
         const el = document.getElementById("screen-" + id);
         if (!el) return;
-        el.classList.toggle("active", id === name);
+        const isActive = id === name;
+        el.classList.toggle("active", isActive);
+        el.setAttribute("aria-hidden", isActive ? "false" : "true");
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
