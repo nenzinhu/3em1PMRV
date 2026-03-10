@@ -193,6 +193,9 @@
                   border-color var(--dur) var(--ease),
                   background var(--dur) var(--ease);
       box-shadow: 0 16px 30px rgba(0,0,0,.26);
+      text-decoration: none;
+      color: var(--text);
+      display: block;
     }
     .menuBtn:hover{
       transform: translateY(-2px);
@@ -263,15 +266,15 @@
             <p>Gerar texto de início de serviço</p>
           </button>
 
-          <button class="menuBtn" onclick="go('envolvidos')">
+          <a class="menuBtn" href="envolvidos/index.html">
             <h2>Relato de Envolvidos</h2>
             <p>Registro de sinistro + fotos + texto formatado</p>
-          </button>
+          </a>
 
-          <button class="menuBtn" onclick="go('pmrv')">
+          <a class="menuBtn" href="pmrv/index.html">
             <h2>Relatório PMRv</h2>
             <p>Gerador Posto 19 - PMRv (copiar/WhatsApp)</p>
-          </button>
+          </a>
         </div>
       </div>
     </section>

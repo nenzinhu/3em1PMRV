@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Relato de Envolvidos | PMRv</title>
+
+  <style>
+    :root{
+      --bg-0: #0b1220;
+      --cardA: rgba(255,255,255,.10);
+      --cardB: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --primary: #4f7cff;
+      --primary2: #2f5eff;
+      --danger: #ff4d4d;
+      --shadow: 0 18px 45px rgba(0,0,0,.45);
+      --shadowSoft: 0 10px 25px rgba(0,0,0,.30);
+      --rXL: 18px;
+      --rLG: 14px;
+      --rMD: 12px;
+      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --s1: 6px; --s2: 10px; --s3: 14px; --s4: 18px; --s5: 24px;
+      --ease: cubic-bezier(.2,.9,.2,1);
+      --dur: 180ms;
+    }
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(900px 400px at 20% 0%, rgba(79,124,255,.28), transparent 55%),
+        radial-gradient(700px 360px at 90% 20%, rgba(34,197,94,.20), transparent 55%),
+        radial-gradient(800px 400px at 60% 100%, rgba(255,77,77,.14), transparent 60%),
+        linear-gradient(180deg, #050814, var(--bg-0));
+      padding: 14px;
+    }
+    .appShell{ max-width: 1050px; margin: 0 auto; }
+    .topbar{
+      position: sticky; top: 10px; z-index: 50;
+      display:flex; align-items:center; justify-content:space-between; gap: var(--s3);
+      padding: var(--s3); border-radius: var(--rXL);
+      background: linear-gradient(180deg, var(--cardA), var(--cardB));
+      border: 1px solid var(--border); box-shadow: var(--shadowSoft);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .brand{ display:flex; flex-direction:column; gap: 4px; min-width:0; }
+    .brandRow{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .badge{
+      display:inline-flex; align-items:center; padding: 6px 10px; border-radius: 999px;
+      font-weight: 900; font-size: 12px;
+      background: rgba(79,124,255,.14); border: 1px solid rgba(79,124,255,.35); white-space: nowrap;
+    }
+    .brand h1{ margin:0; font-size: 16px; letter-spacing: .3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand small{ color: var(--muted); font-weight: 700; font-size: 12px; }
+    .topActions{ display:flex; gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
+    .btn{
+      border: 1px solid transparent; border-radius: 12px; padding: 10px 12px;
+      font-weight: 900; font-size: 13px; cursor: pointer; color: var(--text);
+      background: rgba(255,255,255,.08);
+      transition: transform var(--dur) var(--ease), background var(--dur) var(--ease),
+                  border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.14); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn:focus{ outline:none; box-shadow: 0 0 0 4px rgba(79,124,255,.28), 0 10px 22px rgba(0,0,0,.25); }
+    .btnGhost{ background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); box-shadow: none; }
+    .card{
+      background: linear-gradient(180deg, var(--cardA), var(--cardB));
+      border: 1px solid var(--border); border-radius: var(--rXL);
+      padding: var(--s4); box-shadow: var(--shadow);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .embed{ overflow-x:auto; border-radius: var(--rXL); }
+    .actions{ display:flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+    @media (max-width: 520px){
+      body{ padding: 10px; }
+      .card{ padding: 14px; }
+      .topbar{ padding: 12px; border-radius: 16px; flex-direction: column; align-items: stretch; }
+      .topActions{ width: 100%; }
+      .topActions .btn{ width: 100%; }
+    }
+
+    /* Envolvidos styles */
+    .env{ font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color:#333; }
+    .env .container { background:white; max-width:600px; margin:auto; padding:25px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
+    .env h2 { text-align:center; color:#2c3e50; border-bottom:2px solid #25d366; padding-bottom:10px; margin-bottom:25px; }
+    .env .envolvido-card { background:#fff; padding:20px; border-radius:12px; margin-bottom:25px; border:1px solid #ddd; border-left:8px solid #3498db; }
+    .env h3 { margin-top:0; color:#3498db; font-size:1.2em; }
+    .env label { display:block; margin-top:15px; font-size:0.75em; font-weight:bold; color:#7f8c8d; }
+    .env input, .env textarea, .env select { width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; font-size:16px; }
+    .env input:not(.contato) { text-transform:uppercase; }
+    .env .foto-preview-container { display:grid; grid-template-columns:repeat(auto-fill, minmax(80px,1fr)); gap:10px; margin-top:15px; padding:10px; background:#f9f9f9; border-radius:8px; min-height:50px; }
+    .env .img-miniatura { width:100%; aspect-ratio:1/1; border-radius:6px; object-fit:cover; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+    .env .btn-foto { background:#e67e22; color:white; padding:14px; border-radius:8px; cursor:pointer; display:block; text-align:center; margin-top:10px; font-size:0.9em; font-weight:bold; }
+    .env .menu-botoes { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:25px; }
+    .env button { border:none; padding:18px; border-radius:10px; cursor:pointer; font-weight:bold; color:white; transition:0.3s; font-size:14px; }
+    .env .btn-add { background:#2c3e50; grid-column:span 2; margin-bottom:10px; }
+    .env .btn-copy { background:#7f8c8d; }
+    .env .btn-whats { background:#25d366; }
+    @media (max-width:480px){ .env .menu-botoes{ grid-template-columns:1fr; } .env .btn-add{ grid-column:span 1; } }
+  </style>
+</head>
+<body>
+  <div class="appShell">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandRow">
+          <span class="badge">PMRv • 3 em 1</span>
+          <h1>Relato de Envolvidos</h1>
+        </div>
+        <small>Registro de sinistro + fotos + texto formatado</small>
+      </div>
+      <div class="topActions">
+        <a class="btn btnGhost" href="../index.html">← Menu</a>
+      </div>
+    </header>
+
+    <div style="margin-top:12px;">
+      <div class="card embed">
+        <div class="env">
+          <div class="container">
+            <h2>📋 Registro de Sinistro</h2>
+
+            <div id="env_lista_envolvidos">
+              <div class="envolvido-card">
+                <h3>Envolvido 1</h3>
+
+                <label>TIPO:</label>
+                <select class="tipo">
+                  <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+                  <option value="TESTEMUNHA">TESTEMUNHA</option>
+                </select>
+
+                <label>NOME COMPLETO:</label>
+                <input type="text" class="nome" placeholder="NOME DO MOTORISTA" spellcheck="true">
+
+                <label>VEÍCULO:</label>
+                <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
+
+                <label>CONTATO:</label>
+                <input type="tel" class="contato" oninput="env_mascara(this)" placeholder="(00) 00000-0000" maxlength="15">
+
+                <label>LOCAL:</label>
+                <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
+
+                <label>RELATO / DINÂMICA:</label>
+                <textarea class="relato" rows="3" placeholder="Descreva os fatos..." spellcheck="true"></textarea>
+
+                <label class="btn-foto">
+                  📸 TIRAR OU ANEXAR FOTOS
+                  <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
+                </label>
+
+                <div class="foto-preview-container"></div>
+              </div>
+            </div>
+
+            <button class="btn-add" onclick="env_adicionar()">+ ADICIONAR NOVO ENVOLVIDO</button>
+
+            <div class="menu-botoes">
+              <button class="btn-copy" onclick="env_copiar()">📄 COPIAR PARA TELEGRAM/ZAP</button>
+              <button class="btn-whats" onclick="env_enviarWhats()">🟢 ENVIAR WHATSAPP</button>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function env_mascara(i){
+            let v = i.value.replace(/\D/g,"");
+            if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+            else v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+            i.value = v;
+          }
+
+          function env_gerarMiniatura(input){
+            const container = input.parentElement.nextElementSibling;
+            container.innerHTML = "";
+            if (input.files){
+              Array.from(input.files).forEach(arquivo => {
+                const leitor = new FileReader();
+                leitor.onload = function(e){
+                  const img = document.createElement('img');
+                  img.src = e.target.result;
+                  img.className = 'img-miniatura';
+                  container.appendChild(img);
+                }
+                leitor.readAsDataURL(arquivo);
+              });
+            }
+          }
+
+          function env_adicionar(){
+            const lista = document.getElementById('env_lista_envolvidos');
+            const n = lista.querySelectorAll('.envolvido-card').length + 1;
+
+            const div = document.createElement('div');
+            div.className = 'envolvido-card';
+
+            div.innerHTML = `
+              <h3>Envolvido ${n}</h3>
+
+              <label>TIPO:</label>
+              <select class="tipo">
+                <option value="ENVOLVIDO" selected>ENVOLVIDO</option>
+                <option value="TESTEMUNHA">TESTEMUNHA</option>
+              </select>
+
+              <label>NOME COMPLETO:</label>
+              <input type="text" class="nome" spellcheck="true" placeholder="NOME COMPLETO">
+
+              <label>VEÍCULO:</label>
+              <input type="text" class="marca" placeholder="MARCA / MODELO / PLACA">
+
+              <label>CONTATO:</label>
+              <input type="tel" class="contato" oninput="env_mascara(this)" maxlength="15" placeholder="(00) 00000-0000">
+
+              <label>LOCAL:</label>
+              <input type="text" class="endereco" placeholder="RUA, NÚMERO, BAIRRO">
+
+              <label>RELATO:</label>
+              <textarea class="relato" rows="3" spellcheck="true" placeholder="Descreva os fatos..."></textarea>
+
+              <label class="btn-foto">
+                📸 TIRAR OU ANEXAR FOTOS
+                <input type="file" accept="image/*" multiple style="display:none;" onchange="env_gerarMiniatura(this)">
+              </label>
+
+              <div class="foto-preview-container"></div>
+            `;
+
+            lista.appendChild(div);
+            div.scrollIntoView({ behavior:'smooth' });
+          }
+
+          function env_safeUpper(v){ return (v || "").toString().trim().toUpperCase(); }
+
+          function env_montarTexto(){
+            const cards = document.querySelectorAll('#env_lista_envolvidos .envolvido-card');
+            let txt = "*📋 RELATÓRIO DE SINISTRO*\n";
+            txt += "🗓️ Data: " + new Date().toLocaleDateString('pt-BR') + "\n";
+            txt += "--------------------------\n";
+
+            cards.forEach((c, i) => {
+              const nome = env_safeUpper(c.querySelector('.nome')?.value);
+              const marca = env_safeUpper(c.querySelector('.marca')?.value);
+              const contato = (c.querySelector('.contato')?.value || "").trim();
+              const endereco = env_safeUpper(c.querySelector('.endereco')?.value);
+              const relato = (c.querySelector('.relato')?.value || "").trim();
+
+              const tipo = (c.querySelector('.tipo')?.value || "ENVOLVIDO").toUpperCase();
+              const rotulo = (tipo === "TESTEMUNHA") ? "🧑‍🦱 TESTEMUNHA" : "👤 ENVOLVIDO";
+
+              txt += `*${rotulo} ${i+1}*\n`;
+              if (nome) txt += `• Nome: ${nome}\n`;
+              if (marca) txt += `• Veículo: ${marca}\n`;
+              if (contato) txt += `• Contato: ${contato}\n`;
+              if (endereco) txt += `• Local: ${endereco}\n`;
+              if (relato) txt += `• Relato: ${relato}\n`;
+              txt += "\n";
+            });
+
+            return txt.trim();
+          }
+
+          function env_copiar(){
+            navigator.clipboard.writeText(env_montarTexto()).then(() => {
+              const btn = document.querySelector('.env .btn-copy');
+              const old = btn.textContent;
+              btn.textContent = "✅ COPIADO!";
+              setTimeout(() => btn.textContent = old, 2000);
+            });
+          }
+
+          function env_enviarWhats(){
+            window.open(`https://wa.me/?text=${encodeURIComponent(env_montarTexto())}`, '_blank');
+          }
+        </script>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
