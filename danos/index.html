@@ -26,6 +26,36 @@
       align-items:center;
       justify-content:center;
       padding:16px;
+      padding-top:72px;
+    }
+
+    .page-nav{
+      position:fixed;
+      top:14px;
+      left:50%;
+      transform:translateX(-50%);
+      width:min(360px, calc(100% - 24px));
+      display:flex;
+      gap:10px;
+      z-index:10;
+    }
+
+    .nav-btn{
+      flex:1;
+      border-radius:10px;
+      padding:10px 12px;
+      text-align:center;
+      text-decoration:none;
+      color:#e6eef8;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.10);
+      font-size:12px;
+      font-weight:800;
+      transition:transform .12s ease, background .12s ease;
+    }
+    .nav-btn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,0.10);
     }
 
     .box{
@@ -118,6 +148,11 @@
 </head>
 
 <body>
+  <div class="page-nav">
+    <a class="nav-btn" href="javascript:history.back()">Voltar</a>
+    <a class="nav-btn" href="../index.html">Início</a>
+  </div>
+
   <div class="box">
     <h1>Danos Parentes</h1>
     <p>Selecione o tipo de vistoria</p>
