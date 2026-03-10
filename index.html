@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>3 em 1 PMRv</title>
+  <title>4 em 1 PMRv</title>
 
   <style>
     /* =========================
@@ -234,7 +234,7 @@
     <header class="topbar">
       <div class="brand">
         <div class="brandRow">
-          <span class="badge">PMRv • 3 em 1</span>
+          <span class="badge">PMRv • 4 em 1</span>
           <h1>Geradores e Relatos</h1>
         </div>
         <small>Assunção • Envolvidos • PMRv</small>
@@ -271,6 +271,11 @@
           <button class="menuBtn" onclick="go('pmrv')">
             <h2>Relatório PMRv</h2>
             <p>Gerador Posto 19 - PMRv (copiar/WhatsApp)</p>
+          </button>
+
+          <button class="menuBtn" onclick="window.open('danos/index.html', '_blank')">
+            <h2>Danos por Tipo</h2>
+            <p>Abre em nova aba para escolher Carro ou Motocicleta</p>
           </button>
         </div>
       </div>
@@ -1020,6 +1025,131 @@
       </div>
     </section>
 
+    <!-- DANOS APARENTES -->
+    <section id="screen-danos" class="screen" style="margin-top:12px;">
+      <div class="actions">
+        <button class="btn btnGhost" onclick="go('home')">← Voltar</button>
+        <button class="btn btnDanger" onclick="go('ended')">Sair</button>
+      </div>
+
+      <div class="card embed">
+        <style>
+          .dan{ font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color:#1f2937; }
+          .dan .container{ background:#fff; max-width:680px; margin:0 auto; padding:22px; border-radius:14px; box-shadow:0 10px 25px rgba(0,0,0,.10); }
+          .dan h2{ margin:0 0 18px; text-align:center; color:#1e3a8a; font-size:20px; }
+          .dan .grid{ display:grid; grid-template-columns:1fr; gap:12px; }
+          .dan .vehicle-card{ border:1px solid #dbe3ef; border-radius:10px; padding:12px; background:#f8fafc; }
+          .dan h3{ margin:0 0 10px; color:#1e3a8a; font-size:16px; }
+          .dan label{ display:block; font-size:12px; font-weight:800; color:#64748b; margin-bottom:6px; text-transform:uppercase; }
+          .dan input,.dan textarea{ width:100%; border:1px solid #dbe3ef; border-radius:8px; padding:10px; font-size:14px; }
+          .dan textarea{ min-height:80px; resize:vertical; }
+          .dan .btn-row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+          .dan button{ border:none; border-radius:8px; padding:13px; font-weight:900; color:#fff; cursor:pointer; }
+          .dan .btn-add{ width:100%; background:#334155; }
+          .dan .btn-gen{ width:100%; background:#1e3a8a; }
+          .dan .btn-copy{ flex:1; background:#10b981; }
+          .dan .btn-whats{ flex:1; background:#25D366; }
+          .dan #dan_resultado_container{ display:none; margin-top:14px; }
+          .dan #dan_resultado{ white-space:pre-line; background:#f8fafc; border-left:5px solid #1e3a8a; border-radius:6px; padding:14px; font-family:var(--mono); }
+        </style>
+
+        <div class="dan">
+          <div class="container">
+            <h2>Registro de Danos Aparentes</h2>
+
+            <div class="grid" id="dan_veiculos_lista">
+              <div class="vehicle-card">
+                <h3>Veículo 1</h3>
+                <label>Identificação do veículo</label>
+                <input type="text" class="dan_veiculo" placeholder="Marca / Modelo / Placa">
+                <label style="margin-top:10px;">Danos aparentes</label>
+                <textarea class="dan_avarias" placeholder="Descreva as avarias visíveis deste veículo..."></textarea>
+              </div>
+            </div>
+
+            <button class="btn-add" onclick="dan_adicionarVeiculo()">+ Adicionar veículo (até 4)</button>
+            <button class="btn-gen" onclick="dan_gerar()">Gerar texto</button>
+
+            <div id="dan_resultado_container">
+              <div id="dan_resultado"></div>
+              <div class="btn-row">
+                <button class="btn-copy" onclick="dan_copiar()">Copiar</button>
+                <button class="btn-whats" onclick="dan_whatsapp()">WhatsApp</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function dan_adicionarVeiculo(){
+            const lista = document.getElementById("dan_veiculos_lista");
+            const qtdAtual = lista.querySelectorAll('.vehicle-card').length;
+
+            if (qtdAtual >= 4){
+              alert("Limite máximo de 4 veículos.");
+              return;
+            }
+
+            const n = qtdAtual + 1;
+            const card = document.createElement("div");
+            card.className = "vehicle-card";
+            card.innerHTML = `
+              <h3>Veículo ${n}</h3>
+              <label>Identificação do veículo</label>
+              <input type="text" class="dan_veiculo" placeholder="Marca / Modelo / Placa">
+              <label style="margin-top:10px;">Danos aparentes</label>
+              <textarea class="dan_avarias" placeholder="Descreva as avarias visíveis deste veículo..."></textarea>
+            `;
+
+            lista.appendChild(card);
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+
+          function dan_gerar(){
+            const cards = Array.from(document.querySelectorAll("#dan_veiculos_lista .vehicle-card"));
+            if (cards.length === 0) return;
+
+            let texto = "*RELATO DE DANOS APARENTES*\n";
+            texto += "--------------------------\n";
+
+            for (let i = 0; i < cards.length; i++){
+              const v = (cards[i].querySelector(".dan_veiculo")?.value || "").trim();
+              const a = (cards[i].querySelector(".dan_avarias")?.value || "").trim();
+
+              if (!v || !a){
+                alert(`Preencha identificação e avarias do Veículo ${i + 1}.`);
+                return;
+              }
+
+              texto += `Veículo ${i + 1}: ${v}\n`;
+              texto += `Avarias aparentes: ${a}\n`;
+              texto += "\n";
+            }
+
+            texto += "Observação: relato baseado em avarias visíveis no local, sem caráter pericial.";
+
+            document.getElementById("dan_resultado").textContent = texto;
+            document.getElementById("dan_resultado_container").style.display = "block";
+          }
+
+          function dan_copiar(){
+            const texto = document.getElementById("dan_resultado").textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+              const btn = document.querySelector('.dan .btn-copy');
+              const old = btn.textContent;
+              btn.textContent = "Copiado!";
+              setTimeout(() => btn.textContent = old, 1800);
+            });
+          }
+
+          function dan_whatsapp(){
+            const texto = document.getElementById("dan_resultado").textContent;
+            window.open("https://wa.me/?text=" + encodeURIComponent(texto), "_blank");
+          }
+        </script>
+      </div>
+    </section>
+
     <!-- ENCERRADO -->
     <section id="screen-ended" class="screen" style="margin-top:12px;">
       <div class="card endedBox">
@@ -1035,7 +1165,7 @@
 
   <script>
     function go(name){
-      const ids = ["home","assumir","envolvidos","pmrv","ended"];
+      const ids = ["home","assumir","envolvidos","pmrv","danos","ended"];
       ids.forEach(id => {
         const el = document.getElementById("screen-" + id);
         if (!el) return;

@@ -1,0 +1,674 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vistoria da Motocicleta — Interativo</title>
+
+  <!-- Fonte (opcional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#4f46e5;
+      --accent-2:#06b6d4;
+      --glass: rgba(255,255,255,0.03);
+      --danger:#ef4444;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background:linear-gradient(180deg,#071028 0%, #071a2a 60%);
+      color:#e6eef8;
+      padding:22px;
+      font-size:13px;
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:14px;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;font-weight:800;
+      box-shadow:0 6px 20px rgba(79,70,229,0.18);
+    }
+    h1{font-size:16px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:12px}
+
+    .layout{
+      display:grid;
+      grid-template-columns: 360px 1fr 380px;
+      gap:16px;
+      align-items:start;
+      margin-top:14px;
+    }
+
+    /* Left */
+    .panel{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+
+    .tabs{
+      display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;
+    }
+    .tab{
+      padding:6px 10px;border-radius:9px;background:transparent;color:var(--muted);
+      cursor:pointer;font-weight:800;font-size:12px;border:1px solid transparent;
+    }
+    .tab.active{
+      background:linear-gradient(90deg, rgba(79,70,229,0.12), rgba(6,182,212,0.06));
+      color:var(--accent-2);
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 6px 18px rgba(6,182,212,0.04);
+    }
+
+    .parts-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      max-height:72vh;
+      overflow:auto;
+      padding-right:6px;
+    }
+
+    .part-card{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;padding:8px;border-radius:10px;background:var(--glass);
+      cursor:pointer;border:1px solid rgba(255,255,255,0.02);
+      transition:transform .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .part-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .part-left{display:flex;gap:10px;align-items:center}
+    .part-icon{
+      width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#0b1220,rgba(255,255,255,0.02));
+      display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--muted);
+      border:1px solid rgba(255,255,255,0.02);
+      font-size:12px;
+      flex:0 0 auto;
+    }
+    .part-name{font-weight:800;font-size:13px;line-height:1.15}
+    .part-sub{font-size:11px;color:var(--muted);margin-top:2px}
+    .badge{
+      font-size:11px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.damaged{background:linear-gradient(90deg,var(--danger),#ff7a7a);color:white}
+
+    /* Center (apenas instruções) */
+    .center-panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius); padding:16px;
+      box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+    }
+    .center-panel h2{margin:0 0 10px 0;font-size:15px}
+    .center-panel .hint{color:var(--muted);font-size:12px;margin:0;line-height:1.5}
+    .tips{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .tip{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      padding:10px;border-radius:10px;
+      font-size:12px;color:var(--muted);
+    }
+
+    /* Right */
+    .report{display:flex;flex-direction:column;gap:12px}
+    .report .card{
+      padding:12px;border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02)
+    }
+    .report h3{margin:0 0 6px 0;font-size:14px}
+    .report-list{display:flex;flex-direction:column;gap:8px;max-height:44vh;overflow:auto;padding-right:6px}
+    .report-item{display:flex;justify-content:space-between;gap:12px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)}
+    .empty{color:var(--muted);font-size:12px}
+
+    .btn{
+      padding:8px 12px;border-radius:9px;border:0;cursor:pointer;font-weight:900;font-size:12px;
+    }
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .btn.whatsapp{
+      background:linear-gradient(90deg,#25D366,#128C7E);
+      color:#071028;
+      border:0;
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(2,6,23,0.6);
+      display:none;align-items:center;justify-content:center;z-index:60;padding:16px;
+    }
+    .modal{
+      width:100%;max-width:520px;background:linear-gradient(180deg,#071028,#071a2a);
+      border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 20px 60px rgba(2,6,23,0.7)
+    }
+    .modal h3{margin:0 0 6px 0;font-size:15px}
+    .damage-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .damage-btn{
+      padding:8px 10px;border-radius:9px;background:rgba(255,255,255,0.02);
+      cursor:pointer;border:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);font-weight:900;font-size:12px;
+    }
+    .damage-btn.active{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;border:1px solid rgba(255,255,255,0.06)
+    }
+    .modal-footer{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+    textarea{
+      width:100%;margin-top:6px;padding:8px;border-radius:8px;background:transparent;
+      border:1px solid rgba(255,255,255,0.04);color:inherit;font-size:12px;resize:vertical;
+    }
+
+    /* Texto gerado na página */
+    .generated-box{
+      margin-top:10px;
+      padding:10px;border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02);
+      display:none;
+    }
+    .generated-box .row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    .generated-title{font-weight:900;font-size:12px;margin:0}
+    pre{
+      margin:0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family:Inter, system-ui, Arial, sans-serif;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    @media (max-width:1100px){
+      .layout{grid-template-columns:1fr; padding-bottom:40px}
+      .center-panel{order:2}
+      .report{order:3}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">M</div>
+    <div>
+      <h1>Vistoria da Motocicleta</h1>
+      <p class="lead">Selecione a vista e clique em uma parte para registrar a avaria + descrição. Gere o texto e compartilhe no WhatsApp.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ESQUERDA -->
+    <section class="panel" aria-label="Partes da motocicleta">
+      <div class="tabs" role="tablist" aria-label="Abas">
+        <button class="tab active" data-tab="frente" role="tab" aria-selected="true">🟥 Frente</button>
+        <button class="tab" data-tab="tras" role="tab" aria-selected="false">🟦 Traseira</button>
+        <button class="tab" data-tab="direita" role="tab" aria-selected="false">🟩 Direita</button>
+        <button class="tab" data-tab="esquerda" role="tab" aria-selected="false">🟨 Esquerda</button>
+      </div>
+
+      <div class="parts-grid" id="parts-list" aria-live="polite"></div>
+    </section>
+
+    <!-- CENTRO -->
+    <section class="center-panel" aria-label="Instruções">
+      <h2>Como usar</h2>
+      <p class="hint">
+        1) Escolha a vista (Frente, Traseira, Direita, Esquerda).<br>
+        2) Clique na parte para definir o tipo de avaria.<br>
+        3) (Opcional) Descreva a avaria.<br>
+        4) Clique em <strong>Salvar</strong>.<br>
+        5) Clique em <strong>Gerar Texto</strong> para montar o relatório aqui na página e compartilhar no WhatsApp.
+      </p>
+
+      <div class="tips">
+        <div class="tip">💡 Dica: Enter abre o item selecionado. Esc fecha o modal.</div>
+        <div class="tip">✅ Itens aparecem como: <strong>Nº - Nome</strong> e mostram também a vista e o local (Central/Direito/Esquerdo).</div>
+      </div>
+    </section>
+
+    <!-- DIREITA -->
+    <aside class="report" aria-label="Relatório">
+      <div class="card">
+        <h3>Relatório de Danos</h3>
+        <div class="empty" id="report-empty">Nenhum dano registrado.</div>
+        <div class="report-list" id="report-list" style="display:none"></div>
+      </div>
+
+      <div class="card" style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-weight:900">Resumo</div>
+          <div style="color:var(--muted);font-size:12px" id="summary">0 partes com avarias</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn ghost" id="clearAll">Limpar</button>
+          <button class="btn primary" id="generateText">Gerar Texto</button>
+        </div>
+      </div>
+
+      <div class="card generated-box" id="generatedBox" aria-label="Texto gerado">
+        <div class="row">
+          <p class="generated-title">Texto do Relatório</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="copyText">Copiar</button>
+            <button class="btn whatsapp" id="shareWhatsApp">WhatsApp</button>
+            <button class="btn ghost" id="hideText">Ocultar</button>
+          </div>
+        </div>
+        <pre id="generatedOutput"></pre>
+      </div>
+    </aside>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3 id="modal-title">Parte</h3>
+      <div style="color:var(--muted);font-size:12px" id="modal-sub">Escolha o tipo de avaria</div>
+
+      <div class="damage-options" id="damage-options" role="radiogroup" aria-label="Tipos de avaria"></div>
+
+      <div style="margin-top:12px">
+        <label style="font-size:12px;color:var(--muted)">Descrição/Observação (opcional)</label>
+        <textarea id="obs" rows="3" placeholder="Ex.: arranhado superficial, pequeno amassado..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn ghost" id="modal-cancel">Cancelar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn" id="modal-clear" style="background:#111827;color:var(--muted)">Remover avaria</button>
+          <button class="btn primary" id="modal-save">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ======= DADOS (MOTOCICLETA) =======
+    const PARTES = {
+      frente: [
+        { n: "01", t: "BOLHA", l: "Central", x: 48, y: 15 },
+        { n: "02", t: "CAR. DIANT.", l: "Central", x: 48, y: 28 },
+        { n: "03", t: "FAROL", l: "Central", x: 48, y: 38 },
+        { n: "04", t: "RETR. DIR.", l: "Direito", x: 28, y: 12 },
+        { n: "05", t: "RETR. ESQ.", l: "Esquerdo", x: 68, y: 12 },
+        { n: "06", t: "MANETE DIR.", l: "Direito", x: 24, y: 25 },
+        { n: "07", t: "MANETE ESQ.", l: "Esquerdo", x: 72, y: 25 },
+        { n: "08", t: "SETA DIANT. DIR.", l: "Direito", x: 35, y: 45 },
+        { n: "09", t: "SETA DIANT. ESQ.", l: "Esquerdo", x: 61, y: 45 },
+        { n: "10", t: "SUSP. DIANT. DIR.", l: "Direito", x: 41, y: 65 },
+        { n: "11", t: "SUSP. DIANT. ESQ.", l: "Esquerdo", x: 55, y: 65 },
+        { n: "12", t: "PARAL. DIANT.", l: "Central", x: 48, y: 73 },
+        { n: "13", t: "PNEU DIANT.", l: "Central", x: 48, y: 88 },
+        { n: "14", t: "RODA DIANT.", l: "Central", x: 48, y: 80 }
+      ],
+      tras: [
+        { n: "15", t: "LANTERNA TRAS.", l: "Central" },
+        { n: "16", t: "SETA TRAS. DIR.", l: "Direito" },
+        { n: "17", t: "SETA TRAS. ESQ.", l: "Esquerdo" },
+        { n: "18", t: "PLACA / SUPORTE", l: "Central" },
+        { n: "19", t: "PARALAMA TRAS.", l: "Central" },
+        { n: "20", t: "ALÇA DO GARUPA", l: "Central" },
+        { n: "21", t: "PNEU TRAS.", l: "Central" },
+        { n: "22", t: "RODA TRAS.", l: "Central" }
+      ],
+      direita: [
+        { n: "23", t: "TANQUE", l: "Direito" },
+        { n: "24", t: "CARENAGEM LATERAL", l: "Direito" },
+        { n: "25", t: "BANCO", l: "Direito" },
+        { n: "26", t: "MOTOR", l: "Direito" },
+        { n: "27", t: "ESCAPAMENTO", l: "Direito" },
+        { n: "28", t: "PEDALEIRA", l: "Direito" },
+        { n: "29", t: "PEDAL DE FREIO", l: "Direito" },
+        { n: "30", t: "BALANÇA", l: "Direito" },
+        { n: "31", t: "AMORTECEDOR", l: "Direito" }
+      ],
+      esquerda: [
+        { n: "32", t: "TANQUE", l: "Esquerdo", x: 50.05, y: 18.89 },
+        { n: "33", t: "CARENAGEM LATERAL", l: "Esquerdo", x: 39.68, y: 46.31 },
+        { n: "34", t: "BANCO", l: "Esquerdo", x: 59.69, y: 30.85 },
+        { n: "35", t: "MOTOR", l: "Esquerdo", x: 49.07, y: 56.28 },
+        { n: "36", t: "PEDALEIRA", l: "Esquerdo", x: 53.64, y: 64.42 },
+        { n: "37", t: "PEDAL DE CÂMBIO", l: "Esquerdo", x: 56.99, y: 59.77 },
+        { n: "38", t: "RELAÇÃO/CORRENTE", l: "Esquerdo", x: 76.83, y: 60.10 },
+        { n: "39", t: "BALANÇA", l: "Esquerdo", x: 66.71, y: 57.77 },
+        { n: "40", t: "DESCANSO LATERAL", l: "Esquerdo", x: 50.05, y: 71.23 }
+      ]
+    };
+
+    const DAMAGE_TYPES = ["Amassado","Trincado","Quebrado","Arranhado"];
+
+    // state: id(n) -> { tab, titulo, ladoLocal, tipo, obs }
+    const state = new Map();
+
+    // ======= ELEMENTOS =======
+    const partsList = document.getElementById('parts-list');
+    const reportList = document.getElementById('report-list');
+    const reportEmpty = document.getElementById('report-empty');
+    const summary = document.getElementById('summary');
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSub = document.getElementById('modal-sub');
+    const damageOptions = document.getElementById('damage-options');
+    const obsField = document.getElementById('obs');
+    const modalSave = document.getElementById('modal-save');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalClear = document.getElementById('modal-clear');
+
+    const generateText = document.getElementById('generateText');
+    const clearAll = document.getElementById('clearAll');
+
+    const generatedBox = document.getElementById('generatedBox');
+    const generatedOutput = document.getElementById('generatedOutput');
+    const copyText = document.getElementById('copyText');
+    const shareWhatsApp = document.getElementById('shareWhatsApp');
+    const hideText = document.getElementById('hideText');
+
+    let currentItem = null;
+    let currentTab = 'frente';
+
+    // ======= UTILS =======
+    function capitalize(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+    function formatSideLabel(tabKey){
+      if(tabKey === 'tras') return 'Traseira';
+      return capitalize(tabKey);
+    }
+
+    // ======= RENDER LISTA =======
+    function createPartCard(item, tabKey){
+      const div = document.createElement('div');
+      div.className = 'part-card';
+      div.tabIndex = 0;
+      div.setAttribute('role','button');
+      div.setAttribute('aria-label', `${item.n} - ${item.t} — abrir opções de avaria`);
+      div.dataset.id = item.n;
+      div.dataset.tab = tabKey;
+
+      const left = document.createElement('div'); left.className='part-left';
+      const icon = document.createElement('div'); icon.className='part-icon';
+      icon.textContent = item.n;
+
+      const textWrap = document.createElement('div');
+      const title = document.createElement('div'); title.className='part-name'; title.textContent = `${item.t}`;
+      const sub = document.createElement('div'); sub.className='part-sub'; sub.textContent = `${formatSideLabel(tabKey)} • ${item.l}`;
+      textWrap.appendChild(title);
+      textWrap.appendChild(sub);
+
+      left.appendChild(icon);
+      left.appendChild(textWrap);
+
+      const badge = document.createElement('div'); badge.className='badge'; badge.textContent = 'Sem dano';
+      div.appendChild(left);
+      div.appendChild(badge);
+
+      div.addEventListener('click', ()=> openModal(item, tabKey));
+      div.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openModal(item, tabKey); });
+
+      return div;
+    }
+
+    function renderParts(tabKey){
+      currentTab = tabKey;
+      partsList.innerHTML = '';
+      const arr = PARTES[tabKey] || [];
+
+      arr.forEach(item=>{
+        const card = createPartCard(item, tabKey);
+        const s = state.get(item.n);
+        if(s && s.tipo){
+          const badge = card.querySelector('.badge');
+          badge.textContent = s.tipo;
+          badge.classList.add('damaged');
+        }
+        partsList.appendChild(card);
+      });
+    }
+
+    // ======= RELATÓRIO =======
+    function updateReport(){
+      const entries = Array.from(state.entries()).filter(([id,v])=>v && v.tipo);
+
+      if(entries.length===0){
+        reportList.style.display='none';
+        reportEmpty.style.display='block';
+      } else {
+        reportList.style.display='flex';
+        reportEmpty.style.display='none';
+        reportList.innerHTML = '';
+
+        entries.forEach(([id,info])=>{
+          const div = document.createElement('div'); div.className='report-item';
+
+          const left = document.createElement('div');
+          const obsHtml = info.obs
+            ? `<div style="color:var(--muted);font-size:12px;margin-top:4px"><span style="opacity:.9">Desc:</span> ${escapeHtml(info.obs)}</div>`
+            : '';
+
+          left.innerHTML = `
+            <strong>${escapeHtml(id)} - ${escapeHtml(info.titulo)}</strong>
+            <div style="color:var(--muted);font-size:12px">${escapeHtml(formatSideLabel(info.tab))} • ${escapeHtml(info.ladoLocal)}</div>
+            ${obsHtml}
+          `;
+
+          const right = document.createElement('div');
+          right.innerHTML = `<span style="font-weight:900;color:${info.tipo==='Quebrado'?'var(--danger)':'white'}">${escapeHtml(info.tipo)}</span>`;
+
+          div.appendChild(left); div.appendChild(right);
+          reportList.appendChild(div);
+        });
+      }
+
+      summary.textContent = `${entries.length} partes com avarias`;
+
+      // Atualiza badges na lista atual
+      document.querySelectorAll('.part-card').forEach(card=>{
+        const id = card.dataset.id;
+        const s = state.get(id);
+        const badge = card.querySelector('.badge');
+        if(s && s.tipo){
+          badge.textContent = s.tipo;
+          badge.classList.add('damaged');
+        } else {
+          badge.textContent = 'Sem dano';
+          badge.classList.remove('damaged');
+        }
+      });
+    }
+
+    // ======= MODAL =======
+    function openModal(item, tabKey){
+      currentItem = { ...item, tabKey };
+
+      modalTitle.textContent = `${item.n} - ${item.t}`;
+      modalSub.textContent = `Vista: ${formatSideLabel(tabKey)} • Local: ${item.l}`;
+
+      const existing = state.get(item.n);
+      obsField.value = (existing && existing.obs) || '';
+
+      damageOptions.innerHTML = '';
+      DAMAGE_TYPES.forEach(type=>{
+        const btn = document.createElement('button');
+        btn.className = 'damage-btn';
+        btn.type = 'button';
+        btn.textContent = type;
+        btn.dataset.type = type;
+
+        btn.addEventListener('click', ()=>{
+          damageOptions.querySelectorAll('.damage-btn').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+
+        damageOptions.appendChild(btn);
+      });
+
+      if(existing && existing.tipo){
+        const btn = Array.from(damageOptions.children).find(b=>b.dataset.type===existing.tipo);
+        if(btn) btn.classList.add('active');
+      }
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      setTimeout(()=> damageOptions.querySelector('.damage-btn')?.focus(), 80);
+    }
+
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      currentItem = null;
+    }
+
+    modalCancel.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+    modalSave.addEventListener('click', ()=>{
+      if(!currentItem) return;
+
+      const active = damageOptions.querySelector('.damage-btn.active');
+      const tipo = active ? active.dataset.type : '';
+      const obs = obsField.value.trim();
+
+      if(tipo){
+        state.set(currentItem.n, {
+          tab: currentItem.tabKey,
+          titulo: currentItem.t,
+          ladoLocal: currentItem.l,
+          tipo,
+          obs
+        });
+      } else {
+        state.delete(currentItem.n);
+      }
+
+      updateReport();
+      closeModal();
+    });
+
+    modalClear.addEventListener('click', ()=>{
+      if(!currentItem) return;
+      state.delete(currentItem.n);
+      updateReport();
+      closeModal();
+    });
+
+    // ======= TABS =======
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab').forEach(t=>{
+          t.classList.remove('active');
+          t.setAttribute('aria-selected','false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+
+        renderParts(btn.dataset.tab);
+      });
+    });
+
+    // ======= TEXTO (SEM NUMERAÇÃO + INTRO) =======
+    function buildReportText(){
+      const entries = Array.from(state.entries()).filter(([id,v])=>v && v.tipo);
+      if(entries.length===0) return '';
+
+      // Frase exatamente como você pediu
+      let text = 'Foram identificas as seguintes danos aparentes no veiculo,\n\n';
+
+      entries.forEach(([id,info])=>{
+        text += `- ${id} - ${info.titulo} (${formatSideLabel(info.tab)} • ${info.ladoLocal}): ${info.tipo}`;
+        if(info.obs) text += ` — ${info.obs}`;
+        text += '\n';
+      });
+
+      return text.trim();
+    }
+
+    generateText.addEventListener('click', ()=>{
+      const text = buildReportText();
+      if(!text){
+        generatedBox.style.display = 'none';
+        alert('Nenhum dano registrado.');
+        return;
+      }
+      generatedOutput.textContent = text;
+      generatedBox.style.display = 'block';
+      generatedBox.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    copyText.addEventListener('click', async ()=>{
+      const text = generatedOutput.textContent || '';
+      if(!text) return;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyText.textContent = 'Copiado!';
+        setTimeout(()=> copyText.textContent = 'Copiar', 900);
+      }catch{
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyText.textContent = 'Copiado!';
+        setTimeout(()=> copyText.textContent = 'Copiar', 900);
+      }
+    });
+
+    shareWhatsApp.addEventListener('click', ()=>{
+      const text = generatedOutput.textContent || buildReportText();
+      if(!text){
+        alert('Gere o texto primeiro (clique em "Gerar Texto").');
+        return;
+      }
+      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+      window.open(url, '_blank', 'noopener');
+    });
+
+    hideText.addEventListener('click', ()=> generatedBox.style.display = 'none');
+
+    clearAll.addEventListener('click', ()=>{
+      if(!confirm('Remover todas as avarias registradas?')) return;
+      state.clear();
+      updateReport();
+      generatedBox.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    document.addEventListener('focusin', (e)=>{
+      if(modal.style.display==='flex' && !modal.contains(e.target)){
+        e.stopPropagation();
+        modal.querySelector('.damage-btn')?.focus();
+      }
+    });
+
+    // ======= INICIAL =======
+    renderParts('frente');
+    updateReport();
+  </script>
+</body>
+</html>

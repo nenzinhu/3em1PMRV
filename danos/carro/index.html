@@ -1,0 +1,615 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vistoria do Veículo — Interativo</title>
+
+  <!-- Fonte (opcional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#4f46e5;
+      --accent-2:#06b6d4;
+      --glass: rgba(255,255,255,0.03);
+      --danger:#ef4444;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background:linear-gradient(180deg,#071028 0%, #071a2a 60%);
+      color:#e6eef8;
+      padding:22px;
+      font-size:13px;
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:14px;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;font-weight:800;
+      box-shadow:0 6px 20px rgba(79,70,229,0.18);
+    }
+    h1{font-size:16px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:12px}
+
+    .layout{
+      display:grid;
+      grid-template-columns: 330px 1fr 360px;
+      gap:16px;
+      align-items:start;
+      margin-top:14px;
+    }
+
+    /* Left */
+    .panel{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+
+    .tabs{
+      display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;
+    }
+    .tab{
+      padding:6px 10px;border-radius:9px;background:transparent;color:var(--muted);
+      cursor:pointer;font-weight:800;font-size:12px;border:1px solid transparent;
+    }
+    .tab.active{
+      background:linear-gradient(90deg, rgba(79,70,229,0.12), rgba(6,182,212,0.06));
+      color:var(--accent-2);
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 6px 18px rgba(6,182,212,0.04);
+    }
+
+    .parts-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      max-height:70vh;
+      overflow:auto;
+      padding-right:6px;
+    }
+
+    .part-card{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;padding:8px;border-radius:10px;background:var(--glass);
+      cursor:pointer;border:1px solid rgba(255,255,255,0.02);
+      transition:transform .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .part-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .part-left{display:flex;gap:10px;align-items:center}
+    .part-icon{
+      width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#0b1220,rgba(255,255,255,0.02));
+      display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--muted);
+      border:1px solid rgba(255,255,255,0.02);
+      font-size:12px;
+    }
+    .part-name{font-weight:800;font-size:13px}
+    .badge{
+      font-size:11px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.damaged{background:linear-gradient(90deg,var(--danger),#ff7a7a);color:white}
+
+    /* Center (apenas instruções) */
+    .center-panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius); padding:16px;
+      box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+    }
+    .center-panel h2{margin:0 0 10px 0;font-size:15px}
+    .center-panel .hint{color:var(--muted);font-size:12px;margin:0;line-height:1.5}
+    .tips{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .tip{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      padding:10px;border-radius:10px;
+      font-size:12px;color:var(--muted);
+    }
+
+    /* Right */
+    .report{display:flex;flex-direction:column;gap:12px}
+    .report .card{
+      padding:12px;border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02)
+    }
+    .report h3{margin:0 0 6px 0;font-size:14px}
+    .report-list{display:flex;flex-direction:column;gap:8px;max-height:38vh;overflow:auto;padding-right:6px}
+    .report-item{display:flex;justify-content:space-between;gap:12px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)}
+    .empty{color:var(--muted);font-size:12px}
+
+    .btn{
+      padding:8px 12px;border-radius:9px;border:0;cursor:pointer;font-weight:900;font-size:12px;
+    }
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(2,6,23,0.6);
+      display:none;align-items:center;justify-content:center;z-index:60;padding:16px;
+    }
+    .modal{
+      width:100%;max-width:520px;background:linear-gradient(180deg,#071028,#071a2a);
+      border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 20px 60px rgba(2,6,23,0.7)
+    }
+    .modal h3{margin:0 0 6px 0;font-size:15px}
+    .damage-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .damage-btn{
+      padding:8px 10px;border-radius:9px;background:rgba(255,255,255,0.02);
+      cursor:pointer;border:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);font-weight:900;font-size:12px;
+    }
+    .damage-btn.active{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;border:1px solid rgba(255,255,255,0.06)
+    }
+    .modal-footer{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+    textarea{
+      width:100%;margin-top:6px;padding:8px;border-radius:8px;background:transparent;
+      border:1px solid rgba(255,255,255,0.04);color:inherit;font-size:12px;resize:vertical;
+    }
+
+    /* Texto gerado na página */
+    .generated-box{
+      margin-top:10px;
+      padding:10px;border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02);
+      display:none;
+    }
+    .generated-box .row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    .generated-title{font-weight:900;font-size:12px;margin:0}
+    pre{
+      margin:0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family:Inter, system-ui, Arial, sans-serif;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    @media (max-width:1100px){
+      .layout{grid-template-columns:1fr; padding-bottom:40px}
+      .center-panel{order:2}
+      .report{order:3}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">V</div>
+    <div>
+      <h1>Vistoria do Veículo</h1>
+      <p class="lead">Clique em qualquer parte para registrar o tipo de avaria e uma descrição.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ESQUERDA -->
+    <section class="panel" aria-label="Partes do veículo">
+      <div class="tabs" role="tablist" aria-label="Abas">
+        <button class="tab active" data-tab="frente" role="tab" aria-selected="true">🟥 Frente</button>
+        <button class="tab" data-tab="tras" role="tab" aria-selected="false">🟦 Traseira</button>
+        <button class="tab" data-tab="direita" role="tab" aria-selected="false">🟩 Lado Direito</button>
+        <button class="tab" data-tab="esquerda" role="tab" aria-selected="false">🟨 Lado Esquerdo</button>
+      </div>
+      <div class="parts-grid" id="parts-list" aria-live="polite"></div>
+    </section>
+
+    <!-- CENTRO (INSTRUÇÕES) -->
+    <section class="center-panel" aria-label="Instruções">
+      <h2>Como usar</h2>
+      <p class="hint">
+        1) Selecione uma aba.<br>
+        2) Clique em uma parte para escolher a avaria.<br>
+        3) (Opcional) Escreva uma descrição.<br>
+        4) Clique em <strong>Salvar</strong>.<br>
+        5) <strong>Gerar Texto</strong> monta o relatório aqui na página e permite compartilhar no WhatsApp.
+      </p>
+      <div class="tips">
+        <div class="tip">💡 Enter abre o item selecionado.</div>
+        <div class="tip">⌨️ Esc fecha o modal.</div>
+      </div>
+    </section>
+
+    <!-- DIREITA (RELATÓRIO) -->
+    <aside class="report" aria-label="Relatório">
+      <div class="card">
+        <h3>Relatório de Danos</h3>
+        <div class="empty" id="report-empty">Nenhum dano registrado.</div>
+        <div class="report-list" id="report-list" style="display:none"></div>
+      </div>
+
+      <div class="card" style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-weight:900">Resumo</div>
+          <div style="color:var(--muted);font-size:12px" id="summary">0 partes com avarias</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn ghost" id="clearAll">Limpar</button>
+          <button class="btn primary" id="generateText">Gerar Texto</button>
+        </div>
+      </div>
+
+      <!-- Texto gerado na página -->
+      <div class="card generated-box" id="generatedBox" aria-label="Texto gerado">
+        <div class="row">
+          <p class="generated-title">Texto do Relatório</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="copyText">Copiar</button>
+            <button class="btn ghost" id="shareWhatsApp">WhatsApp</button>
+            <button class="btn ghost" id="hideText">Ocultar</button>
+          </div>
+        </div>
+        <pre id="generatedOutput"></pre>
+      </div>
+    </aside>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3 id="modal-title">Parte</h3>
+      <div style="color:var(--muted);font-size:12px" id="modal-sub">Escolha o tipo de avaria</div>
+
+      <div class="damage-options" id="damage-options" role="radiogroup" aria-label="Tipos de avaria"></div>
+
+      <div style="margin-top:12px">
+        <label style="font-size:12px;color:var(--muted)">Descrição/Observação (opcional)</label>
+        <textarea id="obs" rows="3" placeholder="Ex.: arranhado superficial, pequeno amassado..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn ghost" id="modal-cancel">Cancelar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn" id="modal-clear" style="background:#111827;color:var(--muted)">Remover avaria</button>
+          <button class="btn primary" id="modal-save">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PARTES = {
+      frente: [
+        "Capô","Para-choque","Para-brisa","Farol Direito","Farol Esquerdo",
+        "Farol de Milha Direito","Farol de Milha Esquerdo",
+        "Grade Superior Frontal","Grade Inferior Frontal",
+        "Retrovisor Direito","Retrovisor Esquerdo",
+        "Para-lama Dianteiro Esquerdo","Para-lama Dianteiro Direito","Placa Dianteira"
+      ],
+      tras: [
+        "Lanterna Traseira Esquerda","Lanterna Traseira Direita",
+        "Vidro Traseiro – Vigia","Tampa Porta‑Malas","Para‑choque Traseiro",
+        "Escapamento","Refletor Esquerdo","Refletor Direito","Emblema","Placa Traseira"
+      ],
+      direita: [
+        "Roda Dianteira Direita","Roda Traseira Direita",
+        "Porta Dianteira Direita","Porta Traseira Direita",
+        "Vidro Dianteiro Direito","Vidro Traseiro Direito","Para‑lama Dianteiro Direito"
+      ],
+      esquerda: [
+        "Roda Dianteira Esquerda","Roda Traseira Esquerda",
+        "Porta Dianteira Esquerda","Porta Traseira Esquerda",
+        "Vidro Dianteiro Esquerdo","Vidro Traseiro Esquerdo","Para‑lama Dianteiro Esquerdo"
+      ]
+    };
+
+    const DAMAGE_TYPES = ["Amassado","Trincado","Quebrado","Arranhado"];
+    const state = new Map();
+
+    const partsList = document.getElementById('parts-list');
+    const reportList = document.getElementById('report-list');
+    const reportEmpty = document.getElementById('report-empty');
+    const summary = document.getElementById('summary');
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSub = document.getElementById('modal-sub');
+    const damageOptions = document.getElementById('damage-options');
+    const obsField = document.getElementById('obs');
+
+    const modalSave = document.getElementById('modal-save');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalClear = document.getElementById('modal-clear');
+
+    const generateText = document.getElementById('generateText');
+    const clearAll = document.getElementById('clearAll');
+
+    const generatedBox = document.getElementById('generatedBox');
+    const generatedOutput = document.getElementById('generatedOutput');
+    const copyText = document.getElementById('copyText');
+    const shareWhatsApp = document.getElementById('shareWhatsApp');
+    const hideText = document.getElementById('hideText');
+
+    let currentPart = null;
+    let currentSide = null;
+
+    function detectSide(parte){
+      if(PARTES.frente.includes(parte)) return 'frente';
+      if(PARTES.tras.includes(parte)) return 'traseira';
+      if(PARTES.direita.includes(parte)) return 'direita';
+      if(PARTES.esquerda.includes(parte)) return 'esquerda';
+      return '';
+    }
+    function capitalize(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function createPartCard(name, sideKey){
+      const div = document.createElement('div');
+      div.className = 'part-card';
+      div.tabIndex = 0;
+      div.setAttribute('role','button');
+      div.dataset.name = name;
+      div.dataset.side = sideKey;
+
+      const left = document.createElement('div'); left.className='part-left';
+      const icon = document.createElement('div'); icon.className='part-icon';
+      icon.textContent = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      const title = document.createElement('div'); title.className='part-name'; title.textContent = name;
+      left.appendChild(icon); left.appendChild(title);
+
+      const badge = document.createElement('div'); badge.className='badge'; badge.textContent = 'Sem dano';
+      div.appendChild(left); div.appendChild(badge);
+
+      div.addEventListener('click', ()=> openModal(name, sideKey));
+      div.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openModal(name, sideKey); });
+
+      return div;
+    }
+
+    function renderParts(tabKey){
+      partsList.innerHTML = '';
+      const arr = PARTES[tabKey] || [];
+      arr.forEach(name=>{
+        const card = createPartCard(name, tabKey);
+        const s = state.get(name);
+        if(s && s.tipo){
+          const badge = card.querySelector('.badge');
+          badge.textContent = s.tipo;
+          badge.classList.add('damaged');
+        }
+        partsList.appendChild(card);
+      });
+    }
+
+    function updateReport(){
+      const entries = Array.from(state.entries()).filter(([k,v])=>v && v.tipo);
+
+      if(entries.length===0){
+        reportList.style.display='none';
+        reportEmpty.style.display='block';
+      } else {
+        reportList.style.display='flex';
+        reportEmpty.style.display='none';
+        reportList.innerHTML = '';
+
+        entries.forEach(([parte,info])=>{
+          const div = document.createElement('div'); div.className='report-item';
+
+          const left = document.createElement('div');
+          const obsHtml = info.obs
+            ? `<div style="color:var(--muted);font-size:12px;margin-top:4px"><span style="opacity:.9">Desc:</span> ${escapeHtml(info.obs)}</div>`
+            : '';
+
+          left.innerHTML = `<strong>${escapeHtml(parte)}</strong>
+                            <div style="color:var(--muted);font-size:12px">${escapeHtml(info.lado)}</div>
+                            ${obsHtml}`;
+
+          const right = document.createElement('div');
+          right.innerHTML = `<span style="font-weight:900;color:${info.tipo==='Quebrado'?'var(--danger)':'white'}">${escapeHtml(info.tipo)}</span>`;
+
+          div.appendChild(left); div.appendChild(right);
+          reportList.appendChild(div);
+        });
+      }
+
+      summary.textContent = `${entries.length} partes com avarias`;
+
+      document.querySelectorAll('.part-card').forEach(card=>{
+        const name = card.dataset.name;
+        const s = state.get(name);
+        const badge = card.querySelector('.badge');
+
+        if(s && s.tipo){
+          badge.textContent = s.tipo;
+          badge.classList.add('damaged');
+        } else {
+          badge.textContent = 'Sem dano';
+          badge.classList.remove('damaged');
+        }
+      });
+    }
+
+    function openModal(parte, lado){
+      currentPart = parte;
+      currentSide = lado || detectSide(parte);
+
+      modalTitle.textContent = parte;
+      modalSub.textContent = currentSide ? `Lado: ${capitalize(currentSide)}` : 'Escolha o tipo de avaria';
+
+      const existing = state.get(parte);
+      obsField.value = (existing && existing.obs) || '';
+
+      damageOptions.innerHTML = '';
+      DAMAGE_TYPES.forEach(type=>{
+        const btn = document.createElement('button');
+        btn.className = 'damage-btn';
+        btn.type = 'button';
+        btn.textContent = type;
+        btn.dataset.type = type;
+
+        btn.addEventListener('click', ()=>{
+          damageOptions.querySelectorAll('.damage-btn').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+
+        damageOptions.appendChild(btn);
+      });
+
+      if(existing && existing.tipo){
+        const btn = Array.from(damageOptions.children).find(b=>b.dataset.type===existing.tipo);
+        if(btn) btn.classList.add('active');
+      }
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      setTimeout(()=> damageOptions.querySelector('.damage-btn')?.focus(), 80);
+    }
+
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      currentPart = null;
+      currentSide = null;
+    }
+
+    modalCancel.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+    modalSave.addEventListener('click', ()=>{
+      const active = damageOptions.querySelector('.damage-btn.active');
+      const tipo = active ? active.dataset.type : '';
+      const obs = obsField.value.trim();
+
+      if(tipo){
+        state.set(currentPart, {lado: currentSide || detectSide(currentPart), tipo, obs});
+      } else {
+        state.delete(currentPart);
+      }
+
+      updateReport();
+      closeModal();
+    });
+
+    modalClear.addEventListener('click', ()=>{
+      state.delete(currentPart);
+      updateReport();
+      closeModal();
+    });
+
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab').forEach(t=>{
+          t.classList.remove('active');
+          t.setAttribute('aria-selected','false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+        renderParts(btn.dataset.tab);
+      });
+    });
+
+    // Texto sem numeração + introdução exatamente como você pediu
+    function buildReportText(){
+      const entries = Array.from(state.entries()).filter(([k,v])=>v && v.tipo);
+      if(entries.length===0) return '';
+
+      let text = 'Foram identificas as seguintes danos aparentes no veiculo,\n\n';
+
+      // Sem numeração (usando hífen)
+      entries.forEach(([parte,info])=>{
+        text += `- ${parte} (${capitalize(info.lado)}): ${info.tipo}`;
+        if(info.obs) text += ` — ${info.obs}`;
+        text += '\n';
+      });
+
+      return text.trim();
+    }
+
+    generateText.addEventListener('click', ()=>{
+      const text = buildReportText();
+      if(!text){
+        generatedBox.style.display = 'none';
+        alert('Nenhum dano registrado.');
+        return;
+      }
+      generatedOutput.textContent = text;
+      generatedBox.style.display = 'block';
+      generatedBox.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    copyText.addEventListener('click', async ()=>{
+      const text = generatedOutput.textContent || '';
+      if(!text) return;
+
+      try{
+        await navigator.clipboard.writeText(text);
+        copyText.textContent = 'Copiado!';
+        setTimeout(()=> copyText.textContent = 'Copiar', 900);
+      }catch{
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyText.textContent = 'Copiado!';
+        setTimeout(()=> copyText.textContent = 'Copiar', 900);
+      }
+    });
+
+    // Compartilhar no WhatsApp
+    shareWhatsApp.addEventListener('click', ()=>{
+      const text = generatedOutput.textContent || buildReportText();
+      if(!text){
+        alert('Gere o texto primeiro (clique em "Gerar Texto").');
+        return;
+      }
+      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+      window.open(url, '_blank', 'noopener');
+    });
+
+    hideText.addEventListener('click', ()=> generatedBox.style.display = 'none');
+
+    clearAll.addEventListener('click', ()=>{
+      if(!confirm('Remover todas as avarias registradas?')) return;
+      state.clear();
+      updateReport();
+      generatedBox.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // Focus trap simples
+    document.addEventListener('focusin', (e)=>{
+      if(modal.style.display==='flex' && !modal.contains(e.target)){
+        e.stopPropagation();
+        modal.querySelector('.damage-btn')?.focus();
+      }
+    });
+
+    // Inicial
+    renderParts('frente');
+    updateReport();
+  </script>
+</body>
+</html>
