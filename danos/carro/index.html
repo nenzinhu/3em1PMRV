@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -560,7 +560,7 @@
       const entries = Array.from(state.entries()).filter(([k,v])=>v && v.tipo);
       if(entries.length===0) return '';
 
-      let text = 'Foram identificas as seguintes danos aparentes no veiculo,\n\n';
+      let text = 'Foram identificados os seguintes danos aparentes no veículo:\n\n';
 
       // Sem numeração (usando hífen)
       entries.forEach(([parte,info])=>{
